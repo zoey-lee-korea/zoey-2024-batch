@@ -2,6 +2,8 @@ import sys
 import logging
 import time
 from datetime import datetime
+import datetime as dt
+import traceback
 
     
 def setup_logger(prj_key, now = datetime.now()):
@@ -22,7 +24,7 @@ def setup_logger(prj_key, now = datetime.now()):
     
     
     
-# 메인 시작
+## 메인 시작
 if __name__ == "__main__":
     
     prj_id = None
@@ -45,7 +47,7 @@ if __name__ == "__main__":
     # 3. 일반메시지와 오류메시지가 분리되어 출력되어, 일반메시지와 오류메시지를 구분하기에 유용함
     
     
-    # 프로그램 실행 시 입력한 파라미터 받아오기
+    ## 프로그램 실행 시 입력한 파라미터 받아오기
     args = sys.argv
     if (len(sys.argv) > 1):
         for argument in args:
@@ -57,12 +59,30 @@ if __name__ == "__main__":
             if (preArg == "-m="):
                 mode = argument[3:]
     total_start_time = time.perf_counter() # ex.0.0834604 : 프로그램이 시작된 이후의 시간을 초 단위로 반환
-    logging.debug(args)
-    logging.debug("Project ID : " + str(prj_id) + " / Project Key : " + prj_key + " / Mode : " + mode)
+    logging.debug("args : " + str(args))
+    logging.debug("Project ID : " + str(prj_id) + ", Project Key : " + prj_key + ", Mode : " + mode)
     
     
-    total_end_time = time.perf_counter()
-    total_elapsed_time = total_end_time - total_start_time
+    #TODO : schedule_config
+    
+    
+    try:
+        logging.debug('----- Main Logic start')
+    except Exception as e:
+        logging.debug('!!! exportMain __main__ initialization Exception occured {}'.format(str(e)))
+        logging.debug('!!!' + traceback.format_exc())
+
+        # error_string = f'Exception e: {str(e)} \n {traceback.format_exc()}'
+        # sendEmail(prj_key, now, error_string)
+
+    finally:
+        total_end_time = time.perf_counter()
+        total_elapsed_time = total_end_time - total_start_time
+        logging.debug('')
+        logging.debug('----- started at {} , ended at {}'.format(start_time, dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+        logging.debug('----- job finished... total elapsed time: {} seconds'.format(time.strftime("%H:%M:%S", time.gmtime(total_elapsed_time))))
+        
+    
     
     
     
